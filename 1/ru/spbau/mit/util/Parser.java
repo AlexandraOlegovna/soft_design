@@ -3,52 +3,10 @@ package ru.spbau.mit.util;
 
 import java.util.*;
 import java.io.*;
-import java.nio.file.Paths;
 
 
 public class Parser {
   private Map<String, String> view = new HashMap<String, String>();
-  private Executor executor = new Executor();
-  private boolean debug = false;
-
-  public Parser() {
-    executor.put("echo", new EchoFunction());
-    executor.put("cat", new CatFunction());
-  }
-  public Parser(boolean debug) {
-    this();
-    this.debug = debug;
-  }
-
-  public void loop() throws IOException {
-    Scanner sc = new Scanner(System.in);
-    while (true) {
-      String dir = Paths.get(".").toAbsolutePath().normalize().toString();
-      System.out.printf("%s > ", dir);
-      if (sc.hasNextLine()) {
-        String line = sc.nextLine();
-        ArrayList<String[]> mtrx = parse(line);
-        if (mtrx.size() == 0) {
-          continue;
-        }
-
-        if (debug) {
-          for (String[] shell : mtrx) {
-            System.out.printf("shell start: shell.length = %s\n", shell.length);
-            for (String word : shell) {
-              System.out.printf("(%s) ", word);
-            }
-            System.out.println("\n");
-          }
-        }
-
-        executor.execute(mtrx, System.in, System.out);
-      } else {
-        System.out.println("no more data \n");
-        break;
-      }
-    }
-  }
 
   public ArrayList<String[]> parse(String s) {
     ArrayList<String[]> mtrx = split(s);
@@ -147,12 +105,6 @@ public class Parser {
   }
 
   public static void main(String[] args) {
-    Parser p = new Parser();
-    try {
-      p.loop();
-    } catch (Throwable e) {
-      System.out.println(e.getMessage());
-    }
   }
 }
 

@@ -23,7 +23,7 @@ public class Remapper implements Runnable {
     if (inp == null) {
       return;
     }
-    int data = ' ';
+    int data = inp.read();
     while (data != -1) {
       outp.write(data);
       outp.flush();

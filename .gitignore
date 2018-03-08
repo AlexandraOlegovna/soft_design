@@ -1,9 +1,19 @@
 
+*.exe
+*.obj
+*.o
+*.so
+*.a
+*.lib
+
 *.swp
 *.avi
 *.zip
 *.png
 *.pdf
+
 *.idea
+*.class
+*.jar
 
 

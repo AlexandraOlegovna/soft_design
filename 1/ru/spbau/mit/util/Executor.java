@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 public final class Executor {
   private Map<String, AbstractFunction> functionBox = new HashMap<String, AbstractFunction>();
   private AbstractFunction defaultFunction = new ProcessFunction();
-  private boolean interactive = false;
   private String path = Paths.get(".").toAbsolutePath().normalize().toString() + '/';
 
   public AbstractFunction put(String functionName, AbstractFunction function) {
@@ -30,7 +29,7 @@ public final class Executor {
     }
 
     List<Thread> subProcessList = new ArrayList<Thread>();
-    InputStream inp = interactive ? startInp : null;
+    InputStream inp = startInp;
     try {
       for (final String[] shell : mtrx) {
         AbstractFunction cmd = null;
@@ -100,14 +99,6 @@ public final class Executor {
         } else {
           path = newDir.toPath().toAbsolutePath().normalize().toString() + '/';
         }
-        return false;
-      }
-      if (mtrx.get(0)[0].equals("i")) {
-        interactive = !interactive;
-        return false;
-      }
-      if (mtrx.get(0)[0].equals("mode")) {
-        System.out.println("interactive = " + interactive);
         return false;
       }
     }

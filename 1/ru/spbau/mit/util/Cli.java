@@ -8,13 +8,14 @@ import java.io.*;
 public class Cli {
   private Executor executor;
   private Parser parser = new Parser();
+  private volatile InputStream inp = new SpaceAddInputStream();
 
   public Cli(Executor executor) {
     this.executor = executor;
   }
 
   public void loop() throws IOException {
-    Scanner sc = new Scanner(System.in);
+    Scanner sc = new Scanner(inp);
     while (true) {
       System.out.printf("%s > ", executor.getPath());
       if (sc.hasNextLine()) {
@@ -23,7 +24,7 @@ public class Cli {
         if (mtrx.size() == 0) {
           continue;
         }
-        executor.execute(mtrx, System.in, System.out);
+        executor.execute(mtrx, inp, System.out);
       } else {
         System.out.println("no more data \n");
         break;

@@ -1,31 +1,32 @@
 
 package ru.spbau.mit.util;
 
-import java.util.*;
 import java.io.*;
 
 
 final class EchoFunction extends AbstractFunction {
   private String[] args;
-  private OutputStream outp;
-  private InputStream inp;
+  private OutputStream outputStream;
 
+  @Override
   public AbstractFunction clone() {
     return new EchoFunction();
   }
+
+  @Override
   public void init(String[] args, InputStream inp, OutputStream outp, String path) {
     this.args = args;
-    this.inp = inp;
-    this.outp = outp;
+    this.outputStream = outp;
   }
+
   public void run() {
-    try (OutputStream fakeOutp = outp) {
+    try (OutputStream fakeOutput = outputStream) {
       for (String str : args) {
         str += " ";
-        outp.write(str.getBytes());
+        outputStream.write(str.getBytes());
       }
-      outp.write("\n".getBytes());
-      outp.flush();
+      outputStream.write("\n".getBytes());
+      outputStream.flush();
     } catch (Throwable e) {
     }
   }

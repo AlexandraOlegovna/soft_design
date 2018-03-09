@@ -10,6 +10,7 @@ public final class Executor {
   private Map<String, AbstractFunction> functionBox = new HashMap<String, AbstractFunction>();
   private AbstractFunction defaultFunction = new ProcessFunction();
   private String path = Paths.get(".").toAbsolutePath().normalize().toString() + '/';
+  private Parser parser = new Parser();
 
   public AbstractFunction put(String functionName, AbstractFunction function) {
     return functionBox.put(functionName, function);
@@ -23,17 +24,18 @@ public final class Executor {
     return path;
   }
 
-  public void execute(ArrayList<String[]> mtrx, InputStream startInp, OutputStream endOutp) throws IOException {
+
+  public void execute(String line, InputStream startInp, OutputStream endOutp) throws IOException {
+    ArrayList<String[]> mtrx = parser.parse(line);
     if (!isNeedExternalExecute(mtrx)) {
       return;
     }
-
     List<Thread> subProcessList = new ArrayList<Thread>();
     InputStream inp = startInp;
     try {
       for (final String[] shell : mtrx) {
-        AbstractFunction cmd = null;
-        String[] args = null;
+        AbstractFunction cmd;
+        String[] args;
         if (functionBox.containsKey(shell[0])) {
           cmd = functionBox.get(shell[0]).clone();
           LinkedList<String> listArgs = new LinkedList<String>(Arrays.asList(shell));
@@ -51,7 +53,7 @@ public final class Executor {
         subProcessList.add(subProcess);
         subProcess.start();
 
-        inp = (InputStream) new PipedInputStream(outp);
+        inp = new PipedInputStream(outp);
       }
     } catch (IOException e) {
       System.out.println("error in pipes");
@@ -78,11 +80,9 @@ public final class Executor {
         return false;
       }
     }
-
     if (mtrx.size() == 0) {
       return false;
     }
-
     if (mtrx.size() == 1) {
       if (mtrx.get(0)[0].equals("exit")) {
         System.out.println("good bye. I will miss you...");
@@ -121,5 +121,4 @@ public final class Executor {
   }
 
 }
-
 

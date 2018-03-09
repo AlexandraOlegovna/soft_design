@@ -6,8 +6,13 @@ import java.io.*;
 
 
 class SpaceAddInputStream extends InputStream {
-  private volatile Scanner sc = new Scanner(System.in);
-  private volatile StringReader sr = new StringReader("");
+  private volatile Scanner sc;
+  private volatile StringReader sr;
+
+  public SpaceAddInputStream(InputStream inp) {
+    sc = new Scanner(inp);
+    sr = new StringReader("");
+  }
 
   @Override
   public int available() throws IOException {
@@ -61,7 +66,7 @@ class SpaceAddInputStream extends InputStream {
     synchronized (this) {
       int ret = sr.read();
       if (ret == -1 && sc.hasNextLine()) {
-        String line = "  " + sc.nextLine() + "\n";
+        String line = " " + sc.nextLine() + "\n";
         sr = new StringReader(line);
         ret = sr.read();
       }
@@ -78,7 +83,6 @@ class SpaceAddInputStream extends InputStream {
     int realRead = -1;
     synchronized (this) {
       if (available() > 0) {
-        available();
         realRead = sr.read(buffer, 0, len);
       } else {
         int data = read();
@@ -91,7 +95,6 @@ class SpaceAddInputStream extends InputStream {
         char c = buffer[index];
         b[off + index] = (byte)c;
       }
-      available();
       return realRead;
     }
   }

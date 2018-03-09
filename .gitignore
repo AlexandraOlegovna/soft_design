@@ -5,6 +5,7 @@
 *.so
 *.a
 *.lib
+*.bat
 
 *.swp
 *.avi
@@ -15,5 +16,7 @@
 *.idea
 *.class
 *.jar
+*.iml
+*.gradle
 
 

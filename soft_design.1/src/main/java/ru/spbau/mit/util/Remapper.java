@@ -1,7 +1,6 @@
 
 package ru.spbau.mit.util;
 
-import java.util.*;
 import java.io.*;
 
 public class Remapper implements Runnable {

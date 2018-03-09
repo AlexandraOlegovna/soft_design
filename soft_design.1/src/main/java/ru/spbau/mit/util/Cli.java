@@ -6,11 +6,11 @@ import java.io.*;
 
 
 public class Cli {
+  private volatile InputStream inp;
   private Executor executor;
-  private Parser parser = new Parser();
-  private volatile InputStream inp = new SpaceAddInputStream();
 
-  public Cli(Executor executor) {
+  public Cli(InputStream inp, Executor executor) {
+    this.inp = new SpaceAddInputStream(inp);
     this.executor = executor;
   }
 
@@ -20,11 +20,7 @@ public class Cli {
       System.out.printf("%s > ", executor.getPath());
       if (sc.hasNextLine()) {
         String line = sc.nextLine();
-        ArrayList<String[]> mtrx = parser.parse(line);
-        if (mtrx.size() == 0) {
-          continue;
-        }
-        executor.execute(mtrx, inp, System.out);
+        executor.execute(line, inp, System.out);
       } else {
         System.out.println("no more data \n");
         break;
@@ -36,11 +32,9 @@ public class Cli {
     Executor executor = new Executor();
     executor.put("echo", new EchoFunction());
     executor.put("cat", new CatFunction());
-    Cli cli = new Cli(executor);
+    Cli cli = new Cli(System.in, executor);
     cli.loop();
   }
 
 }
-
-
 

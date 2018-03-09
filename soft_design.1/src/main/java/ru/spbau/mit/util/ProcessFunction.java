@@ -1,8 +1,8 @@
 
 package ru.spbau.mit.util;
 
-import java.util.*;
 import java.io.*;
+import java.util.regex.Pattern;
 
 
 final class ProcessFunction extends AbstractFunction {
@@ -11,10 +11,13 @@ final class ProcessFunction extends AbstractFunction {
   private OutputStream outp;
   private ProcessBuilder pb;
 
+  @Override
   public AbstractFunction clone() {
     return new ProcessFunction();
   }
-  public void init(String[] shell, InputStream inp, OutputStream outp, String path) throws IOException {
+
+  @Override
+  public void init(String[] shell, InputStream inp, OutputStream outp, String path) {
     this.inp = inp;
     this.outp = outp;
     this.command = shell[0];
@@ -24,7 +27,7 @@ final class ProcessFunction extends AbstractFunction {
     if (1 < shell.length) {
       for (int i = 1; i < shell.length; i++) {
         String s = shell[i];
-        if (s.matches("\\s")) {
+        if (Pattern.compile("\\s").matcher(s).find()) {
           s = "\'" + s + '\'';
         }
         sb.append(s).append(" ");
@@ -33,7 +36,6 @@ final class ProcessFunction extends AbstractFunction {
     }
 
     if (args != null) {
-      System.out.println("cmd = " + command + " " + args);
       this.pb = new ProcessBuilder("bash", "-c", command + " " + args);
     } else {
       this.pb = new ProcessBuilder(command);
@@ -43,7 +45,7 @@ final class ProcessFunction extends AbstractFunction {
   }
 
   public void run() {
-    Process process = null;
+    Process process;
     try {
       process = pb.start();
     } catch (Throwable e) {
@@ -58,7 +60,7 @@ final class ProcessFunction extends AbstractFunction {
       threadRemapper = new Thread(new Remapper(inp, processIn));
       threadRemapper.start();
       Remapper.pushFlow(processOut, outp);
-      int errCode = process.waitFor();
+      process.waitFor();
     } catch (Exception e) {
     } finally {
       if (threadRemapper != null) {

@@ -2,14 +2,13 @@
 package ru.spbau.mit.util;
 
 import java.util.*;
-import java.io.*;
 
 
 public class Parser {
   private Map<String, String> view = new HashMap<String, String>();
 
-  public ArrayList<String[]> parse(String s) {
-    ArrayList<String[]> mtrx = split(s);
+  public ArrayList<String[]> parse(String rawInputString) {
+    ArrayList<String[]> mtrx = split(rawInputString);
     boolean hasPipe = mtrx.size() > 1;
 
     for (int shellIndex = 0; shellIndex < mtrx.size(); shellIndex++) {
@@ -42,6 +41,10 @@ public class Parser {
     return mtrx;
   }
 
+  /**
+   * @param raw input string
+   * @return pipe splitted Array of shell command array
+   */
   private static ArrayList<String[]> split(String raw) {
     ArrayList<String[]> structured = new ArrayList<String[]>();
     ArrayList<String> localShell = new ArrayList<String>();
@@ -102,9 +105,6 @@ public class Parser {
       structured.add(localShell.toArray(shell));
     }
     return structured;
-  }
-
-  public static void main(String[] args) {
   }
 }
 

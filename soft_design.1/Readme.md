@@ -30,5 +30,5 @@
 
 
 ### Диаграмма классов
-![Class Diagram](/cli_diagram.png)
+![Class Diagram](cli_diagram.png)
 

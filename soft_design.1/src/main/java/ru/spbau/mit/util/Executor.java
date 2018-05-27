@@ -90,17 +90,62 @@ public final class Executor {
         System.exit(0);
       }
       if (mtrx.get(0)[0].equals("cd")) {
-        String newDirName = mtrx.get(0)[1];
-        File newDir = new File(path + newDirName);
-        if (!newDir.exists()) {
-          System.out.println("cd: no such file or directory...");
-        } else if (!newDir.isDirectory()) {
-          System.out.printf("cd: \"%s\" is not a directory...\n", newDirName);
-        } else {
+        // cd
+        if (mtrx.get(0).length > 2) {
+          System.out.println("cd: too many arguments");
+          return false;
+        }
+        File newDir = parseArgs(mtrx, System.getProperty("user.dir"));
+
+        if (isDirectoryOK(newDir)) {
           path = newDir.toPath().toAbsolutePath().normalize().toString() + '/';
         }
         return false;
       }
+      if (mtrx.get(0)[0].equals("ls")) {
+
+        File newDir = parseArgs(mtrx, path);
+
+        if (isDirectoryOK(newDir)) {
+          printFilesFromDir(newDir);
+        }
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private File parseArgs(ArrayList<String[]> mtrx, String pathByDefault) {
+    String newDirName;
+    if (mtrx.get(0).length >= 2) {
+      newDirName = mtrx.get(0)[1];
+    } else {
+      newDirName = pathByDefault;
+    }
+    File newDir = new File(newDirName);
+    // check relative path
+    if (!newDir.isAbsolute()) {
+      // change to absolute
+      newDir = new File(path + newDirName);
+    }
+    return newDir;
+  }
+
+  private void printFilesFromDir(File dir) {
+    File[] listOfFiles = dir.listFiles();
+    for (File f : listOfFiles) {
+      System.out.println(f.getName());
+    }
+  }
+
+  private boolean isDirectoryOK(File dir) {
+    if (!dir.exists()) {
+      System.out.println("no such file or directory...");
+      return false;
+    }
+    if (!dir.isDirectory()) {
+      System.out.printf("\"%s\" is not a directory...\n", dir);
+      return false;
     }
     return true;
   }

@@ -5,6 +5,7 @@ import org.junit.After;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -26,37 +27,37 @@ public class CdFunctionTest {
 
 
     @Test
-    public void test1() throws IOException {
+    public void cdDirNotExists() throws IOException {
         Executor ex = new Executor();
         String path = ex.getPath();
         ex.execute("cd aaa", null, null);
-        assertEquals("no such file or directory...\n", outContent.toString());
+        assertEquals("no such file or directory..." + System.lineSeparator(), outContent.toString());
         assertEquals(path, ex.getPath());
     }
 
     @Test
-    public void test2() throws IOException {
+    public void cdManyArguments() throws IOException {
         Executor ex = new Executor();
         String path = ex.getPath();
         ex.execute("cd src tests", null, null);
-        assertEquals("cd: too many arguments\n", outContent.toString());
+        assertEquals("cd: too many arguments" + System.lineSeparator(), outContent.toString());
         assertEquals(path, ex.getPath());
     }
 
     @Test
-    public void test3() throws IOException {
+    public void cdSimpleFolder() throws IOException {
         Executor ex = new Executor();
         String path = ex.getPath();
         ex.execute("cd src", null, null);
-        assertEquals(path + "src/", ex.getPath());
+        assertEquals(path + "src" + File.separator, ex.getPath());
     }
 
     @Test
-    public void test4() throws IOException {
+    public void cdComplexFolder() throws IOException {
         Executor ex = new Executor();
         String path = ex.getPath();
-        ex.execute("cd src/test", null, null);
-        assertEquals(path + "src/test/", ex.getPath());
+        ex.execute("cd src" + File.separator + "test", null, null);
+        assertEquals(path + "src" + File.separator + "test" + File.separator, ex.getPath());
     }
 
 }

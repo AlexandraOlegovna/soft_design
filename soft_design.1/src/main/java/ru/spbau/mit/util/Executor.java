@@ -90,7 +90,11 @@ public final class Executor {
         System.exit(0);
       }
       if (mtrx.get(0)[0].equals("cd")) {
-
+        // cd
+        if (mtrx.get(0).length > 2) {
+          System.out.println("cd: too many arguments");
+          return false;
+        }
         File newDir = parseArgs(mtrx, System.getProperty("user.dir"));
 
         if (isDirectoryOK(newDir)) {
